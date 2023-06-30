@@ -40,6 +40,7 @@ const product = mongoose.model('products', new mongoose.Schema({
 
 const order = mongoose.model('orders', new mongoose.Schema({
         order_by: String,
+        order_status: Number,
         order_amount: Number,
         order_item: [],
 }))
@@ -180,9 +181,19 @@ app.post('/api/order', async (req, res) => {
                 .save()
                 .then(() => {
                         // console.log('Data Added!')
-                        res.send('Order Added Suceessfully')
+                        res.json({ status: 'Order Added Suceessfully' })
                 })
                 .catch((error) => console.log(error))
+})
+app.put('/api/order/:id', (req, res) => {
+        order.findByIdAndUpdate(req.params.id, {
+                order_status: req.body.order_status || 0,
+        }, {new: true})
+        .then(() => {
+                order.find({}).then((data) => {
+                        res.send(data)
+                })
+        }).catch((err) => console.log(err))
 })
 app.delete('/api/order/:id', (req, res) => {
         order.findByIdAndDelete(req.params.id).then(() => {
