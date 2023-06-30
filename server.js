@@ -196,8 +196,10 @@ app.put('/api/order/:id', (req, res) => {
         }).catch((err) => console.log(err))
 })
 app.delete('/api/order/:id', (req, res) => {
-        order.findByIdAndDelete(req.params.id).then(() => {
-                res.send({status: 'Removed Successfully'})
+        order.findByIdAndDelete(req.params.id, {new: true}).then(() => {
+                order.find({}).then(data => {
+                        res.send(data)
+                })
         })
 })
 
